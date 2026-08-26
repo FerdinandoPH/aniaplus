@@ -1,0 +1,134 @@
+# Compila el asistente Wii y publica una release con el paquete listo para la tarjeta SD.
+#
+# Se dispara al empujar una etiqueta vX.Y.Z. Lo primero que hace es comprobar que la etiqueta y
+# las versiones de los ficheros dicen lo mismo, porque una release mal etiquetada hay que
+# retirarla a mano.
+name: Publicar una release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  versiones:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.leer.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: leer
+        run: |
+          # En workflow_dispatch no hay etiqueta: se comprueba solo que los ficheros coincidan.
+          etiqueta=""
+          [[ "${{ github.ref_type }}" == "tag" ]] && etiqueta="${{ github.ref_name }}"
+          ./tools/version.sh $etiqueta
+          version="$(sed -n 's/^#define AW_VERSION "\(.*\)"$/\1/p' aw/source/main.c)"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+  # La web va dentro del paquete para que la Wii pueda servirla: asi se usa sin internet y sin
+  # depender de GitHub Pages. Se compila con base '/' porque la consola la sirve en la raiz.
+  web:
+    needs: versiones
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ania/package-lock.json
+      - run: npm ci
+        working-directory: ania
+      - run: npm test
+        working-directory: ania
+      - run: npm run build
+        working-directory: ania
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: ania/dist
+
+  homebrew:
+    needs: web
+    runs-on: ubuntu-latest
+    # La imagen oficial de devkitPro trae el compilador de PowerPC y libogc ya montados en
+    # /opt/devkitpro, que es donde package.sh los busca por defecto.
+    container: devkitpro/devkitppc:latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: web
+          path: web
+
+      # package.sh es el mismo que se usa a mano: compila con make, valida que el icono mida
+      # 128x48 y monta dist/apps/aniaplus. --web-dir le pasa la web ya compilada del paso
+      # anterior, para no necesitar Node dentro de este contenedor.
+      - run: ./package.sh --web-dir "$GITHUB_WORKSPACE/web"
+        working-directory: aw
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: paquete
+          path: aw/dist
+
+  publicar:
+    needs: [versiones, homebrew]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: paquete
+          path: paquete
+
+      # El zip se hace aqui y no en el contenedor de devkitPro, que no trae `zip`. Dentro va la
+      # carpeta `apps` tal cual, para que descomprimir en la raiz de la SD deje todo en su sitio.
+      - name: Empaquetar
+        id: zip
+        run: |
+          version="${{ needs.versiones.outputs.version }}"
+          nombre="aniaplus-$version-wii.zip"
+          ( cd paquete && zip -qr "../$nombre" apps )
+          echo "nombre=$nombre" >> "$GITHUB_OUTPUT"
+          unzip -l "$nombre"
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.zip.outputs.nombre }}
+          name: ANIA+ ${{ needs.versiones.outputs.version }}
+          body: |
+            Asistente Wii **${{ needs.versiones.outputs.version }}**, con ANIA+ **${{ needs.versiones.outputs.version }}** dentro.
+
+            ## Instalar
+
+            1. Descomprime `${{ steps.zip.outputs.nombre }}` en la **raíz de la tarjeta SD**. Tiene que quedar `apps/aniaplus/boot.dol`.
+            2. Mete la SD en la Wii y abre el **Homebrew Channel**.
+            3. Lanza *ANIA+ Asistente Wii*. En pantalla saldrá la IP de la consola.
+            4. Abre esa dirección en el navegador (`http://IP-DE-LA-WII:8080/`), o entra en
+               <https://ferdinandoph.github.io/aniaplus/> y escribe la IP en la pestaña *Wii*.
+
+            El paquete lleva la web dentro, así que la opción 3 funciona sin internet.
+
+            ## Antes de empezar
+
+            - Hace falta el **Homebrew Channel**, y lanzar el asistente desde ahí: el guardado de
+              PBR pertenece a otro título, y para que la consola deje entrar el asistente parchea
+              en memoria el IOS que ya está corriendo. No hay nada que instalar.
+              Si lo lanzas desde otro sitio —un forwarder, un cargador de juegos, un Homebrew
+              Channel antiguo— hará falta un **cIOS (249 o 250)** instalado.
+            - El dispositivo desde el que edites tiene que estar en la **misma red local** que la Wii.
+            - Haber arrancado Pokémon Battle Revolution al menos una vez, para que exista el guardado.
+
+            ---
+
+            Software libre: la web bajo GPLv3 y el asistente Wii bajo GPLv2 (el `.zip` lleva el
+            texto en `apps/aniaplus/LICENSE`). El código está en este mismo repositorio.
+
+            Commit: ${{ github.sha }}

@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+
+# Compilados de la web (vite)
+ania/dist/
+
+# Compilados del homebrew (devkitPro)
+aw/build/
+aw/dist/
+aw/boot.dol
+aw/boot.elf
+
+# Basura del sistema y del editor
+.DS_Store
+Thumbs.db
+*.log
+*.local
+*:Zone.Identifier
+
+# Ajustes locales de Claude Code
+.claude/settings.local.json

@@ -1,0 +1,69 @@
+# Publica la web en GitHub Pages: https://ferdinandoph.github.io/aniaplus/
+#
+# Es la copia que usa la gente sin tocar nada. Ojo: para hablar con la Wii, el dispositivo que
+# abra esta pagina tiene que estar en la misma red local que la consola.
+name: Publicar la web
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Que dos despliegues no se pisen, pero sin cancelar el que ya esta a medias.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ania/package-lock.json
+
+      # Da el base_path que corresponda al repositorio ('/aniaplus' aqui, vacio si algun dia
+      # esto pasa a ser ferdinandoph.github.io). Vite lo necesita porque la ruta va escrita
+      # dentro del HTML y del CSS.
+      - id: pages
+        uses: actions/configure-pages@v5
+        with:
+          # Enciende Pages en el repositorio si no lo estaba. Sin esto, la primera ejecucion
+          # falla aqui y hay que ir a Settings a mano; con esto, un fork tampoco tiene que.
+          enablement: true
+
+      - run: npm ci
+        working-directory: ania
+
+      # Las pruebas que necesitan guardados reales se saltan solas aqui: esos ficheros no estan
+      # en el repositorio. Pasan las demas, que son las que pueden romper la web.
+      - run: npm test
+        working-directory: ania
+
+      - run: npm run build
+        working-directory: ania
+        env:
+          BASE: ${{ steps.pages.outputs.base_path }}/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ania/dist
+
+  desplegar:
+    needs: compilar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

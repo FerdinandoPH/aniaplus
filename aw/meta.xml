@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app version="1">
+  <name>ANIA+ Asistente Wii</name>
+  <coder>ANIA+</coder>
+  <version>0.1.0</version>
+  <release_date>20260814</release_date>
+  <!--
+    Pide al Homebrew Channel que arranque la aplicacion sin recargar IOS y con AHBPROT desactivado.
+    Sin esto no hay forma de parchear el IOS en caliente y el asistente vuelve a depender de que la
+    consola tenga un cIOS instalado. <ahb_access/> es la etiqueta del HBC 1.1.0 en adelante;
+    <no_ios_reload/> es la del 1.0.7, que el 1.1.0 sigue aceptando como sinonimo.
+  -->
+  <ahb_access/>
+  <no_ios_reload/>
+  <!--
+    Bilingue castellano / ingles a proposito, y a mano.
+
+    El Homebrew Channel no sabe de idiomas: su parser (channelapp/source/xml.c) lee `name`,
+    `coder`, `version`, `short_description`, `long_description`, `release_date` y `arguments`, coge
+    el primer elemento que encuentra con ese nombre y ya. No hay atributo `lang` ni variantes que
+    valgan, asi que la unica forma de no dejar fuera a nadie es meter los dos idiomas en el mismo
+    texto. Que el asistente hable cinco idiomas no ayuda aqui: eso lo decide `CONF_GetLanguage` una
+    vez arrancado, y esta ficha se pinta antes.
+
+    `short_description` sale en el menu principal del canal, en una sola linea y corta: ahi caben
+    las dos mitades solo porque estan recortadas al maximo. Si se alarga, se corta en pantalla.
+  -->
+  <short_description>Guardado de PBR / PBR save bridge</short_description>
+  <long_description>[ES] Permite que ANIA+ lea y escriba el guardado de Pokemon Battle Revolution desde el movil o el ordenador.
+
+Al arrancar muestra la direccion IP de la Wii. Escribela en ANIA+, o abre esa direccion en el navegador para usar la aplicacion servida desde la propia consola.
+
+Solo atiende una conexion a la vez. Guarda en memoria una copia del guardado tal como estaba la primera vez que se leyo; el boton 1 la restaura.
+
+Boton 1: restaurar la copia de seguridad de la sesion.
+HOME: salir.
+
+[EN] Lets ANIA+ read and write the Pokemon Battle Revolution save file from your phone or computer.
+
+On startup it shows the Wii's IP address. Type it into ANIA+, or open that address in a browser to use the app served by the console itself.
+
+It handles one connection at a time. It keeps an in-memory copy of the save as it was when first read; button 1 restores it.
+
+Button 1: restore the session backup.
+HOME: quit.</long_description>
+</app>

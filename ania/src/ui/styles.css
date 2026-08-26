@@ -1,0 +1,329 @@
+/* ANIA+ — hoja de estilos única. Diseño pensado primero para el móvil: el caso de uso es estar
+   sentado frente a la tele con el teléfono en la mano. */
+
+/* El turquesa de la marca es #048E9F. Sobre él, el texto blanco solo llega a 3,9:1, así que los
+   rellenos usan un tono más oscuro (--accent-fill, 5,8:1) y el claro se reserva para texto e
+   iconos sobre fondo oscuro. El acento no se usa nunca como texto sobre sí mismo. */
+:root {
+  --bg: #0d1418;
+  --surface: #131f24;
+  --surface-2: #1b2b31;
+  --surface-3: #23353c; /* realce al pasar por encima */
+  --border: #24393f;
+  --text: #e6f0f2;
+  --muted: #8aa4ab;
+  --accent: #2fc0d2;
+  --accent-fill: #04707e;
+  --accent-fill-hi: #058a9b;
+  --accent-dim: #0d3a41;
+  --on-accent: #ffffff;
+  /* Las señales van en pareja igual que el acento: un tono para texto y otro para relleno, que
+     tiene que aguantar texto blanco encima. */
+  --danger: #ff7a72;
+  --danger-fill: #b4302a;
+  --danger-fill-hi: #cc3b34;
+  --ok: #5fd08a;
+  --warn: #ffcc50;
+  --shadow: 0 6px 20px rgba(0, 0, 0, .35);
+  --radius: 12px;
+  --tap: 44px; /* objetivo táctil mínimo cómodo */
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f1f6f7;
+    --surface: #ffffff;
+    --surface-2: #e6eff1;
+    --surface-3: #d8e7ea;
+    --border: #cfdee1;
+    --text: #0e1a1e;
+    --muted: #54696f;
+    --accent: #06707e;
+    --accent-dim: #d5eef1;
+    --shadow: 0 6px 20px rgba(6, 60, 68, .14);
+    /* Sobre fondo claro los tonos vivos no se leen: las señales se oscurecen. */
+    --danger: #b4302a;
+    --ok: #1f7a4d;
+    --warn: #8a5a00;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+#app { max-width: 900px; margin: 0 auto; padding: 0 12px 96px; }
+
+/* --- cabecera y navegación ------------------------------------------------ */
+
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 4px; margin-bottom: 12px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+header.top h1 { font-size: 18px; margin: 0; letter-spacing: .5px; }
+header.top .logo { border-radius: 7px; display: block; flex: none; }
+header.top .spacer { flex: 1; }
+
+nav.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  display: flex; background: var(--surface); border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+nav.tabs button {
+  flex: 1; min-height: var(--tap); border: 0; background: none; color: var(--muted);
+  font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 8px 4px; cursor: pointer;
+}
+nav.tabs button .icon { font-size: 18px; line-height: 1; }
+nav.tabs button[aria-current="true"] { color: var(--accent); }
+
+/* --- elementos comunes ---------------------------------------------------- */
+
+button {
+  font: inherit; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--text);
+  min-height: var(--tap); padding: 0 16px; cursor: pointer;
+  transition: background-color .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease;
+}
+button:active { transform: scale(.98); }
+button.primary { background: var(--accent-fill); border-color: var(--accent-fill); color: var(--on-accent); font-weight: 600; }
+button.danger { background: var(--danger-fill); border-color: var(--danger-fill); color: var(--on-accent); font-weight: 600; }
+button.ghost { background: none; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+
+/* Hover solo donde hay puntero de verdad: en el móvil se quedaría pegado tras cada toque. */
+@media (hover: hover) {
+  button:hover:not(:disabled) { background: var(--surface-3); border-color: var(--accent); }
+  button.ghost:hover:not(:disabled) { background: var(--surface-2); }
+  button.primary:hover:not(:disabled) { background: var(--accent-fill-hi); border-color: var(--accent-fill-hi); }
+  button.danger:hover:not(:disabled) { background: var(--danger-fill-hi); border-color: var(--danger-fill-hi); }
+  input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+  nav.tabs button:hover { color: var(--text); background: none; }
+  .pass-card:hover { border-color: var(--accent); box-shadow: var(--shadow); transform: translateY(-1px); }
+  .mon-row:hover { border-color: var(--accent); }
+  .mon-row .name:hover { color: var(--accent); text-decoration: underline; }
+}
+
+/* Nada tenía foco visible: sin esto no se puede recorrer la aplicación con el teclado. */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+  button:active, .pass-card:hover { transform: none; }
+}
+
+input, select, textarea {
+  font: inherit; color: var(--text); background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 10px;
+  min-height: var(--tap); padding: 0 10px; width: 100%;
+  transition: border-color .12s ease;
+}
+textarea { padding: 10px; min-height: 80px; resize: vertical; }
+/* Deslizadores y casillas en el color de la marca, que es donde más se nota y menos cuesta. */
+input[type="range"], input[type="checkbox"] { accent-color: var(--accent); }
+label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.row.end { justify-content: flex-end; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.field { margin-bottom: 12px; }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+/* Botón secundario de una línea: no debe imponer la altura de toque de los principales. */
+button.small { font-size: 12px; min-height: 32px; padding: 4px 10px; }
+
+section.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; margin-bottom: 12px;
+}
+section.card > h2 { font-size: 14px; margin: 0 0 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+
+.empty-state { text-align: center; }
+/* El logo trae su propio fondo casi blanco; se le da forma de tarjeta para que no parezca un recorte. */
+.empty-state .hero {
+  width: min(200px, 55vw); height: auto; border-radius: 16px;
+  margin: 4px auto 12px; display: block;
+}
+
+/* --- sprites -------------------------------------------------------------- */
+
+/* Una hoja para todos: el asistente Wii atiende de una en una y 660 ficheros sueltos serían 660
+   peticiones. El tamaño y el recorte los pone `ui/sprite.ts`, que es quien conoce el índice. */
+.sprite {
+  display: inline-block; flex: none;
+  background-image: url('/pkhex/pokemon.png');
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+.sprite.shiny { background-image: url('/pkhex/pokemon-shiny.png'); }
+
+/* Con sprite, la pastilla deja de ser una pastilla: la imagen ya se distingue sola. */
+.mon.pic { padding: 0; border: 0; background: none; line-height: 0; }
+.badge.pic { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px 2px 2px; }
+
+/* Texto solo para lectores de pantalla: el sprite se ve, el nombre se oye. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+/* --- lista de pases ------------------------------------------------------- */
+
+.pass-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+
+/* Un pase de PBR es una tarjeta de identificación, así que lleva su franja en el canto: gris
+   cuando está suelto, turquesa cuando está seleccionado. Es el único sitio donde se gasta color. */
+.pass-card {
+  position: relative; text-align: left; overflow: hidden; cursor: pointer;
+  /* Mantener pulsado para seleccionar: sin esto el navegador empieza a seleccionar texto. */
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 10px 10px 10px 16px; min-height: 96px; display: flex; flex-direction: column; gap: 6px;
+  transition: background-color .12s ease, border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+}
+.pass-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--border); transition: background-color .12s ease;
+}
+.pass-card[data-selected="true"] { border-color: var(--accent); background: var(--accent-dim); }
+.pass-card[data-selected="true"]::before { background: var(--accent); }
+.pass-card .name { font-weight: 600; }
+.pass-card .team { display: flex; flex-wrap: wrap; gap: 3px; }
+.pass-card .mon {
+  font-size: 10px; padding: 2px 5px; border-radius: 6px;
+  background: var(--surface-2); border: 1px solid var(--border); color: var(--muted);
+}
+/*
+ * El redondel es un botón de verdad: se puede marcar sin abrir el pase. Hay que deshacerle los
+ * estilos de botón (alto mínimo de toque, relleno) o se comería media tarjeta.
+ */
+.pass-card .check {
+  position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 50%;
+  min-height: 0; padding: 0; background: var(--surface);
+  border: 2px solid var(--border); display: grid; place-items: center; font-size: 14px;
+}
+.pass-card[data-selected="true"] .check { background: var(--accent-fill); border-color: var(--accent-fill); color: var(--on-accent); }
+.pass-card.secret .team .mon { letter-spacing: 2px; }
+.pass-card.empty { border-style: dashed; color: var(--muted); align-items: center; justify-content: center; }
+
+/* Ranura marcada de más: elegida, pero sin pase que le toque. */
+.pass-card.spare { opacity: .6; }
+.pass-card.spare[data-selected="true"] { border-style: dashed; }
+/* Qué pase va a caer en esta ranura. */
+.pass-card .incoming { font-size: 12px; font-weight: 600; color: var(--accent); }
+.danger-text { color: var(--danger); }
+
+/* --- cola de transferencia ------------------------------------------------ */
+
+.transfer-queue { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.transfer-row {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 6px 8px; min-height: var(--tap);
+}
+.transfer-row .order {
+  flex: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--accent-fill); color: var(--on-accent);
+  display: grid; place-items: center; font-size: 12px; font-weight: 600;
+}
+.transfer-row .name { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* --- editor de Pokémon ---------------------------------------------------- */
+
+.mon-row {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; min-height: var(--tap);
+  transition: border-color .12s ease;
+}
+.mon-row.empty { border-style: dashed; background: none; }
+.mon-row .idx { color: var(--muted); font-variant-numeric: tabular-nums; }
+.mon-row .name { flex: 1; text-align: left; font-weight: 600; cursor: pointer; }
+/* La ranura vacía lleva dos botones (nuevo / de otro pase), no un texto. */
+.mon-row.empty .name { font-weight: 500; color: var(--accent); gap: 6px; }
+.mon-row.empty .name button { color: var(--accent); }
+
+/* Rótulo de grupo dentro de una tarjeta (EV / IV). */
+h3.group {
+  font-size: 12px; text-transform: uppercase; letter-spacing: .6px;
+  color: var(--muted); margin: 14px 0 8px;
+}
+h3.group:first-of-type { margin-top: 0; }
+
+.move-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.move-row select { flex: 1; }
+.warn-mark { color: var(--warn); font-size: 18px; cursor: help; }
+
+.stat-row { display: grid; grid-template-columns: 42px 1fr 46px; gap: 8px; align-items: center; margin-bottom: 6px; }
+.stat-row .label { font-size: 12px; color: var(--muted); }
+.stat-row input[type="range"] { min-height: 28px; padding: 0; }
+.stat-row .value { text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; }
+/* Casilla numérica de los IV: entra en la columna de 46px del `.stat-row`. */
+.stat-row .value-box {
+  min-height: 30px; padding: 0 4px; text-align: center;
+  font-variant-numeric: tabular-nums; font-size: 13px;
+}
+
+.warnings { list-style: none; padding: 0; margin: 8px 0 0; }
+.warnings li { font-size: 12px; color: var(--warn); padding: 3px 0; }
+
+/* --- diálogos y avisos ---------------------------------------------------- */
+
+dialog.dialog {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); color: var(--text); max-width: 400px; padding: 18px;
+}
+dialog.dialog::backdrop { background: rgba(0, 0, 0, .6); }
+dialog.dialog h2 { margin: 0 0 8px; font-size: 16px; }
+
+/* Ventana de progreso: nada que tocar, así que solo barra y dos líneas de texto. */
+dialog.dialog.progress { min-width: min(320px, 80vw); }
+.transfer-bar { width: 100%; height: 10px; margin: 10px 0 6px; accent-color: var(--accent); }
+
+/* Lista de un diálogo de elección. Se desplaza sola: pueden ser hasta 100 pases. */
+.pick-list { display: flex; flex-direction: column; gap: 6px; max-height: 50vh; overflow-y: auto; margin: 10px 0; }
+.pick-row {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 6px 8px; min-height: var(--tap);
+}
+.pick-row .name { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pick-team { display: flex; flex-wrap: nowrap; gap: 1px; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 76px; transform: translateX(-50%);
+  background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+  padding: 10px 16px; border-radius: 999px; z-index: 100; max-width: 92vw;
+  box-shadow: 0 6px 24px rgba(0,0,0,.35);
+}
+.toast.error { border-color: var(--danger); color: var(--danger); }
+
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); }
+.badge.ok { color: var(--ok); border-color: var(--ok); }
+.badge.warn { color: var(--warn); border-color: var(--warn); }
+
+/* Género editable: un <select> con la misma forma de píldora que un badge, no un campo entero. */
+.badge-select {
+  font-size: 11px; min-height: auto; width: auto;
+  padding: 2px 20px 2px 8px; border-radius: 999px;
+  background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+}
+
+/* Barra de acciones fija sobre la navegación, para la selección múltiple. */
+.action-bar {
+  position: fixed; left: 0; right: 0; bottom: 56px; z-index: 11;
+  display: flex; gap: 8px; padding: 10px 12px;
+  background: var(--surface); border-top: 1px solid var(--border);
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+}
+.action-bar button { flex: 1; }
