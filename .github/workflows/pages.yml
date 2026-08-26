@@ -34,12 +34,12 @@ jobs:
       # Da el base_path que corresponda al repositorio ('/aniaplus' aqui, vacio si algun dia
       # esto pasa a ser ferdinandoph.github.io). Vite lo necesita porque la ruta va escrita
       # dentro del HTML y del CSS.
+      # Pages tiene que estar encendido en el repositorio antes de la primera ejecucion
+      # (Settings -> Pages -> Source: GitHub Actions, o `gh api -X POST /repos/OWNER/REPO/pages
+      # -f build_type=workflow`). El `enablement: true` de esta accion no sirve para eso: el
+      # GITHUB_TOKEN no tiene permiso para crear el sitio y la ejecucion falla aqui.
       - id: pages
         uses: actions/configure-pages@v5
-        with:
-          # Enciende Pages en el repositorio si no lo estaba. Sin esto, la primera ejecucion
-          # falla aqui y hay que ir a Settings a mano; con esto, un fork tampoco tiene que.
-          enablement: true
 
       - run: npm ci
         working-directory: ania
