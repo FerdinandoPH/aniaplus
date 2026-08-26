@@ -4,6 +4,16 @@
 
 #include <errno.h>
 #include <network.h>
+/*
+ * POLLIN y POLLOUT los definia network.h, y libogc los ha movido a su propio <poll.h> (el de BSD,
+ * con los mismos valores). Se incluye solo si network.h no los ha traido: incluirlo siempre daria
+ * redefinicion contra las versiones que todavia los llevan dentro, y ese es justo el libogc que
+ * hay en muchas instalaciones ya hechas. Sin esta guarda, o no compila en el contenedor de
+ * devkitPro o no compila en casa, segun cual de los dos se mire.
+ */
+#ifndef POLLIN
+#include <poll.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
