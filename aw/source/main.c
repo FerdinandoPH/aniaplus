@@ -35,7 +35,7 @@
 #include "screen.h"
 #include "text.h"
 
-#define AW_VERSION "0.1.0"
+#define AW_VERSION "0.1.1"
 /* Raiz de los ficheros de la web en la SD. */
 #define WEB_ROOT "sd:/apps/aniaplus/web"
 

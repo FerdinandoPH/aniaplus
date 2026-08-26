@@ -844,8 +844,24 @@ describe('modelo del entrenador', () => {
  * solo los encontraba quien fuera a buscarlos al selector.
  */
 describe('idioma de la primera visita', () => {
-  test('se coge el primero que hablemos, no el primero a secas', () => {
-    expect(preferredLanguage(['pt-BR', 'ja-JP', 'en-US'])).toBe('ja');
+  test('manda el idioma del dispositivo', () => {
+    expect(preferredLanguage(['ja-JP', 'en-US'])).toBe('ja');
+    expect(preferredLanguage(['de'])).toBe('de');
+  });
+
+  /*
+   * El caso que hizo cambiar esto: la version anterior recorria la lista entera quedandose con el
+   * primero que hablara, y un dispositivo en catalan acababa en japones porque el navegador lo
+   * llevaba mas abajo entre sus preferencias.
+   */
+  test('no se baja por la lista buscando alguno que hablemos', () => {
+    expect(preferredLanguage(['ca-ES', 'ja-JP'])).toBe('es');
+    expect(preferredLanguage(['pl-PL', 'it-IT'])).toBe('en');
+  });
+
+  test('el catalán cae al castellano, que le queda más cerca que el inglés', () => {
+    expect(preferredLanguage(['ca'])).toBe('es');
+    expect(preferredLanguage(['ca-ES'])).toBe('es');
   });
 
   test('la region da igual: es-419 y es-ES son los dos español', () => {
@@ -853,8 +869,8 @@ describe('idioma de la primera visita', () => {
     expect(preferredLanguage(['ES-es'])).toBe('es');
   });
 
-  test('si no hablamos ninguno, inglés y no castellano', () => {
-    expect(preferredLanguage(['pl-PL', 'ru'])).toBe('en');
+  test('si no hablamos el del dispositivo, inglés y no castellano', () => {
+    expect(preferredLanguage(['pl-PL'])).toBe('en');
     expect(preferredLanguage([])).toBe('en');
   });
 });

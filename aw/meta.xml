@@ -2,7 +2,7 @@
 <app version="1">
   <name>ANIA+ Asistente Wii</name>
   <coder>ANIA+</coder>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <release_date>20260814</release_date>
   <!--
     Pide al Homebrew Channel que arranque la aplicacion sin recargar IOS y con AHBPROT desactivado.

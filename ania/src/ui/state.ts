@@ -25,19 +25,30 @@ export type View = 'pases' | 'generar' | 'wii';
 const LANGUAGE_KEY = 'ania-plus:language';
 
 /**
- * El primero de los idiomas que pide el navegador que ANIA+ hable, o inglés.
+ * Idiomas que ANIA+ no habla pero que tienen un vecino evidente, más cerca que el inglés.
  *
- * `navigator.languages` viene ya ordenado por preferencia, así que vale el primero que coincida.
- * Se compara solo la parte de idioma: `es-419` y `es-ES` son los dos `es`, y distinguirlos aquí
- * no pinta nada. Si no coincide ninguno, inglés: es la lengua franca del sitio, y alguien que
- * hable polaco entiende antes «Battle passes» que «Pases de batalla».
+ * Un dispositivo en catalán es casi con seguridad un dispositivo de España: el castellano le sirve
+ * mejor. Gallego, euskera y aranés seguirían el mismo razonamiento el día que haga falta.
+ */
+const NEAREST: Record<string, Lang> = { ca: 'es' };
+
+/**
+ * El idioma con el que abrir para quien llega por primera vez.
+ *
+ * **Manda el idioma del dispositivo y solo ese**, que es `tags[0]`. Recorrer la lista entera
+ * quedándose con el primero que se hablara parecía más listo y era peor: en un dispositivo en
+ * catalán, `ca` no está entre los seis, así que la búsqueda seguía bajando por las preferencias
+ * hasta dar con cualquier cosa conocida —japonés, si alguna vez se añadió al navegador— y la
+ * aplicación abría en un idioma que el usuario no había pedido en ninguna parte.
+ *
+ * Se compara solo la parte de idioma: `es-419` y `es-ES` son los dos `es`. Si no hablamos ese,
+ * inglés, salvo los de `NEAREST`: es la lengua franca del sitio, y alguien que hable polaco
+ * entiende antes «Battle passes» que «Pases de batalla».
  */
 export function preferredLanguage(tags: readonly string[]): Lang {
-  for (const tag of tags) {
-    const base = tag.toLowerCase().split('-')[0] as Lang;
-    if (LANGUAGES.includes(base)) return base;
-  }
-  return 'en';
+  const base = (tags[0] ?? '').toLowerCase().split('-')[0] ?? '';
+  if (LANGUAGES.includes(base as Lang)) return base as Lang;
+  return NEAREST[base] ?? 'en';
 }
 
 /**

@@ -95,7 +95,7 @@ npm run dev -- --host        # reachable from another device on the same network
 ```
 
 ```bash
-npm test                     # 212 tests
+npm test                     # 214 tests
 npm run build                # static files in dist/
 ```
 
@@ -125,7 +125,7 @@ index of 660 cells in `src/data/pkhex/sprites.json`; it needs ImageMagick.
 
 The tests that touch the save format run against **real `PbrSaveData` files**, one per region. Those
 files come from real consoles and do not travel in the repository, so `npm test` looks for them and,
-if they're missing, **skips those blocks instead of failing**: a fresh clone passes 113 of the 212
+if they're missing, **skips those blocks instead of failing**: a fresh clone passes 115 of the 214
 tests and reports no errors at all. The ones that get skipped are exactly the ones that mean nothing
 without a save in front of them.
 
@@ -233,8 +233,9 @@ What does change with the region:
   nickname in a Japanese game looks out of place. With no save loaded, the UI decides.
 
 The app is available in six languages, Japanese included (Pokémon, move and item names come from
-PKHeX). On a first visit it opens in whichever of them the browser asks for, and falls back to
-English; after that it remembers what you picked. The Wii assistant is separate: that one has five,
+PKHeX). On a first visit it opens in the device's own language if it is one of them, and in English if it
+is not — except Catalan, which falls back to Spanish rather than English. After that it remembers
+what you picked. The Wii assistant is separate: that one has five,
 because of the console's font.
 
 ### Making passes
@@ -606,7 +607,7 @@ ania/
   src/ui/    interface, mobile first
   src/storage/  local store and the .aniapass format
   src/transport/  file and network, behind a shared interface
-  tests/     212 tests, against real saves from all three regions
+  tests/     214 tests, against real saves from all three regions
 aw/
   source/    homebrew: NAND (ISFS), HTTP server and text in five languages
   tests/     HTTP parsing and the translations, compiled natively
