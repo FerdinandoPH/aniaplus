@@ -18,7 +18,7 @@ import { renderPokemonEditor } from '../src/ui/pokemoneditor.ts';
 import { progressDialog } from '../src/ui/dom.ts';
 import { sprite, spriteCell } from '../src/ui/sprite.ts';
 import { renderWii } from '../src/ui/wii.ts';
-import { contentLang, currentLang, makeEntry, persist, setLanguage, state, store, update } from '../src/ui/state.ts';
+import { contentLang, currentLang, makeEntry, persist, preferredLanguage, setLanguage, state, store, update } from '../src/ui/state.ts';
 import { bk4FromLang } from '../src/gen/language.ts';
 import { PASS, SIZE_PASS } from '../src/core/constants.ts';
 import { BattlePass } from '../src/core/pass.ts';
@@ -78,6 +78,9 @@ function pickRow(label: string): HTMLButtonElement {
 beforeEach(async () => {
   document.body.replaceChildren();
   await store.clear();
+  // El idioma se fija aquí y no se da por supuesto: sin elección guardada, la aplicación abre en
+  // el del navegador, y el de jsdom es inglés. Estas pruebas comparan contra nombres en español.
+  setLanguage('es');
   update({ view: 'pases', stored: [], selected: new Set(), editing: null, save: null, backup: null, saveSource: null, busy: false });
 });
 
@@ -832,6 +835,27 @@ describe('modelo del entrenador', () => {
     const pass = new BattlePass((await store.list())[0]!.data);
     expect(pass.model).toBe(3);
     expect(pass.gear).toEqual({ head: 0, hair: 0, face: 0, top: 0, bottom: 0, shoes: 0, hands: 1, bag: 1, glasses: 0, badge: 0 });
+  });
+});
+
+/**
+ * En la primera visita no hay idioma elegido y manda el navegador. Importa que esto funcione: la
+ * interfaz está en seis idiomas y antes abría siempre en castellano, con lo que los otros cinco
+ * solo los encontraba quien fuera a buscarlos al selector.
+ */
+describe('idioma de la primera visita', () => {
+  test('se coge el primero que hablemos, no el primero a secas', () => {
+    expect(preferredLanguage(['pt-BR', 'ja-JP', 'en-US'])).toBe('ja');
+  });
+
+  test('la region da igual: es-419 y es-ES son los dos español', () => {
+    expect(preferredLanguage(['es-419'])).toBe('es');
+    expect(preferredLanguage(['ES-es'])).toBe('es');
+  });
+
+  test('si no hablamos ninguno, inglés y no castellano', () => {
+    expect(preferredLanguage(['pl-PL', 'ru'])).toBe('en');
+    expect(preferredLanguage([])).toBe('en');
   });
 });
 

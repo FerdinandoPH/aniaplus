@@ -104,9 +104,34 @@ jobs:
           files: ${{ steps.zip.outputs.nombre }}
           name: ANIA+ ${{ needs.versiones.outputs.version }}
           body: |
+            Wii assistant **${{ needs.versiones.outputs.version }}**, with ANIA+ **${{ needs.versiones.outputs.version }}** inside.
+
+            ## Install
+
+            1. Extract `${{ steps.zip.outputs.nombre }}` to the **root of the SD card**. You should end up with `apps/aniaplus/boot.dol`.
+            2. Put the SD card in the Wii and open the **Homebrew Channel**.
+            3. Launch *ANIA+ Asistente Wii*. The console's IP address appears on screen.
+            4. Open that address in a browser (`http://WII-IP-ADDRESS:8080/`), or go to
+               <https://ferdinandoph.github.io/aniaplus/> and type the IP into the *Wii* tab.
+
+            The package ships the web app inside it, so option 3 works with no internet.
+
+            ## Before you start
+
+            - You need the **Homebrew Channel**, and to launch the assistant from there: PBR's save
+              belongs to a different title, and to get in the assistant patches the already-running
+              IOS in memory. There is nothing to install.
+              If you launch it from somewhere else — a forwarder, a game loader, an old Homebrew
+              Channel — you will need a **cIOS (249 or 250)** installed.
+            - The device you edit from must be on the **same local network** as the Wii.
+            - You must have booted Pokémon Battle Revolution at least once, so the save exists.
+
+            <details>
+            <summary><b>Español</b></summary>
+
             Asistente Wii **${{ needs.versiones.outputs.version }}**, con ANIA+ **${{ needs.versiones.outputs.version }}** dentro.
 
-            ## Instalar
+            ### Instalar
 
             1. Descomprime `${{ steps.zip.outputs.nombre }}` en la **raíz de la tarjeta SD**. Tiene que quedar `apps/aniaplus/boot.dol`.
             2. Mete la SD en la Wii y abre el **Homebrew Channel**.
@@ -116,7 +141,7 @@ jobs:
 
             El paquete lleva la web dentro, así que la opción 3 funciona sin internet.
 
-            ## Antes de empezar
+            ### Antes de empezar
 
             - Hace falta el **Homebrew Channel**, y lanzar el asistente desde ahí: el guardado de
               PBR pertenece a otro título, y para que la consola deje entrar el asistente parchea
@@ -126,9 +151,11 @@ jobs:
             - El dispositivo desde el que edites tiene que estar en la **misma red local** que la Wii.
             - Haber arrancado Pokémon Battle Revolution al menos una vez, para que exista el guardado.
 
+            </details>
+
             ---
 
-            Software libre: la web bajo GPLv3 y el asistente Wii bajo GPLv2 (el `.zip` lleva el
-            texto en `apps/aniaplus/LICENSE`). El código está en este mismo repositorio.
+            Free software: the web app under GPLv3 and the Wii assistant under GPLv2 (the `.zip`
+            carries the text in `apps/aniaplus/LICENSE`). The source is in this repository.
 
             Commit: ${{ github.sha }}

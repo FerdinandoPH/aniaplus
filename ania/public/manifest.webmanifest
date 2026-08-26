@@ -1,8 +1,8 @@
 {
-  "name": "ANIA+ — Creador de pases para Pokémon Battle Revolution",
+  "name": "ANIA+ — Battle pass creator for Pokémon Battle Revolution",
   "short_name": "ANIA+",
-  "description": "Diseña pases de batalla para Pokémon Battle Revolution y transfiérelos a tu Wii.",
-  "lang": "es",
+  "description": "Design battle passes for Pokémon Battle Revolution and transfer them to your Wii.",
+  "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

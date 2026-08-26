@@ -4,7 +4,7 @@
   "license": "GPL-3.0-only",
   "private": true,
   "type": "module",
-  "description": "ANIA+ — creador de pases de batalla para Pokemon Battle Revolution",
+  "description": "ANIA+ — battle pass creator for Pokemon Battle Revolution",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc --noEmit && vite build",

@@ -95,7 +95,7 @@ npm run dev -- --host        # accesible desde otro dispositivo de la misma red
 ```
 
 ```bash
-npm test                     # 209 pruebas
+npm test                     # 212 pruebas
 npm run build                # ficheros estáticos en dist/
 ```
 
@@ -126,7 +126,7 @@ la época del juego— en `public/pkhex/pokemon.png` y `pokemon-shiny.png`, 192 
 Las pruebas que tocan el formato del guardado van contra **ficheros `PbrSaveData` de verdad**, uno
 por región. Esos ficheros son de consolas reales y no viajan en el repositorio, así que
 `npm test` los busca y, si no están, **se salta esos bloques en lugar de fallar**: un clon recién
-hecho pasa 110 de las 209 pruebas y no da ni un error. Las que se saltan son justo las que no
+hecho pasa 113 de las 212 pruebas y no da ni un error. Las que se saltan son justo las que no
 significan nada sin un guardado delante.
 
 Para tenerlas todas, pon los guardados donde los espera `tests/fixtures.ts` (rutas relativas a la
@@ -233,7 +233,9 @@ Lo que sí cambia con la región:
   una partida japonesa queda fuera de sitio. Sin guardado cargado manda la interfaz.
 
 La aplicación está en seis idiomas, japonés incluido (los nombres de Pokémon, movimientos y objetos
-salen de PKHeX). El asistente Wii es aparte: ese tiene cinco, por la fuente de la consola.
+salen de PKHeX). En la primera visita abre en el que pida el navegador, de los seis, y si no habla
+ninguno, en inglés; a partir de ahí recuerda el que elijas. El asistente Wii es aparte: ese tiene
+cinco, por la fuente de la consola.
 
 ### Hacer pases
 
@@ -606,7 +608,7 @@ ania/
   src/ui/    interfaz, primero para móvil
   src/storage/  almacén local y formato .aniapass
   src/transport/  fichero y red, tras una interfaz común
-  tests/     209 pruebas, sobre guardados reales de las tres regiones
+  tests/     212 pruebas, sobre guardados reales de las tres regiones
 aw/
   source/    homebrew: NAND (ISFS), servidor HTTP y textos en cinco idiomas
   tests/     el parseo HTTP y las traducciones, compilados de forma nativa

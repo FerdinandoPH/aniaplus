@@ -24,9 +24,33 @@ export type View = 'pases' | 'generar' | 'wii';
 
 const LANGUAGE_KEY = 'ania-plus:language';
 
+/**
+ * El primero de los idiomas que pide el navegador que ANIA+ hable, o inglés.
+ *
+ * `navigator.languages` viene ya ordenado por preferencia, así que vale el primero que coincida.
+ * Se compara solo la parte de idioma: `es-419` y `es-ES` son los dos `es`, y distinguirlos aquí
+ * no pinta nada. Si no coincide ninguno, inglés: es la lengua franca del sitio, y alguien que
+ * hable polaco entiende antes «Battle passes» que «Pases de batalla».
+ */
+export function preferredLanguage(tags: readonly string[]): Lang {
+  for (const tag of tags) {
+    const base = tag.toLowerCase().split('-')[0] as Lang;
+    if (LANGUAGES.includes(base)) return base;
+  }
+  return 'en';
+}
+
+/**
+ * Idioma con el que abre la aplicación.
+ *
+ * Manda lo que el usuario eligiera la última vez. En la primera visita no hay nada elegido, y
+ * entonces manda el navegador: la interfaz está en seis idiomas, y abrir siempre en castellano
+ * dejaba los otros cinco donde no los ve nadie que no vaya a buscarlos al selector.
+ */
 function loadLanguage(): Lang {
   const stored = localStorage.getItem(LANGUAGE_KEY);
-  return LANGUAGES.includes(stored as Lang) ? (stored as Lang) : 'es';
+  if (LANGUAGES.includes(stored as Lang)) return stored as Lang;
+  return preferredLanguage(navigator.languages?.length ? navigator.languages : [navigator.language]);
 }
 
 export interface AppState {
@@ -97,9 +121,24 @@ export function contentLang(): Lang {
   return state.save?.language ?? state.language;
 }
 
+/**
+ * Deja el `lang` del documento a juego con la interfaz.
+ *
+ * El `index.html` no puede traerlo puesto —es un fichero estático y el idioma se decide al
+ * arrancar—, así que declara inglés y aquí se corrige. No es cosmético: de ese atributo salen la
+ * pronunciación de los lectores de pantalla, la separación silábica y la corrección ortográfica de
+ * los campos de texto.
+ */
+function applyDocumentLang(lang: Lang): void {
+  document.documentElement.lang = lang;
+}
+
+applyDocumentLang(state.language);
+
 /** Cambia el idioma de la app y lo recuerda para la próxima vez. */
 export function setLanguage(lang: Lang): void {
   localStorage.setItem(LANGUAGE_KEY, lang);
+  applyDocumentLang(lang);
   update({ language: lang });
 }
 
