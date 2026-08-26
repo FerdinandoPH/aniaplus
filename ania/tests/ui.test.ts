@@ -10,6 +10,7 @@ import { speciesNames as speciesNamesFn } from '../src/data/index.ts';
 
 // Los tests siguen comprobando el idioma de referencia (español).
 const speciesNames = speciesNamesFn('es');
+
 import { passName, renderGenerator } from '../src/ui/generator.ts';
 import { renderPassEditor } from '../src/ui/passeditor.ts';
 import { renderPassList } from '../src/ui/passlist.ts';
@@ -28,6 +29,19 @@ import { DEFAULT_OPTIONS, generatePass } from '../src/gen/random.ts';
 import { Rng } from '../src/gen/rng.ts';
 import { describeSaves, loadRaw } from './fixtures.ts';
 import type { StoredPass } from '../src/storage/db.ts';
+
+/**
+ * El nombre de una especie tal y como vuelve del guardado.
+ *
+ * Farfetch’d es la única de las 493 que no sobrevive intacta: PKHeX lo escribe con el apóstrofo
+ * tipográfico ’ (U+2019), que no está en la tabla de Gen 4, así que `encodeG4String` guarda el
+ * apóstrofo del juego (0x1B3) y al releer sale el recto. El byte guardado es el correcto —es el
+ * que el juego pinta—, de modo que lo que hay que comparar es esto y no el nombre de partida.
+ *
+ * Comparar el de partida hacía fallar al generador una de cada ochenta ejecuciones: es lo que
+ * tarda en salir sorteada una especie de 493 en un equipo de seis.
+ */
+const asStored = (name: string): string => name.toUpperCase().replaceAll('’', "'");
 
 /** Un pase de verdad, con seis Pokémon generados. */
 function samplePass(name: string): Uint8Array {
@@ -583,7 +597,7 @@ describe('generador', () => {
     await new Promise((r) => setTimeout(r, 80));
 
     const pass = new BattlePass((await store.list())[0]!.data);
-    expect(pass.pokemon.every((pk) => pk.nickname === speciesNames[pk.species]!.toUpperCase())).toBe(true);
+    expect(pass.pokemon.every((pk) => pk.nickname === asStored(speciesNames[pk.species]!))).toBe(true);
     expect(pass.pokemon.every((pk) => !pk.isNicknamed)).toBe(true);
   });
 

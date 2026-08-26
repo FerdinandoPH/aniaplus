@@ -9,7 +9,7 @@ import { BK4 } from '../src/core/bk4.ts';
 import { BattlePass } from '../src/core/pass.ts';
 import { PbrSave } from '../src/core/save.ts';
 import { getPersonal, moveNames as moveNamesFn, movePP, speciesNames as speciesNamesFn } from '../src/data/index.ts';
-import { buildBK4, findPid, Gender, genderFromPid } from '../src/gen/build.ts';
+import { buildBK4, defaultPokemon, findPid, Gender, genderFromPid } from '../src/gen/build.ts';
 import { DEFAULT_OPTIONS, generatePass, generatePasses } from '../src/gen/random.ts';
 import { Rng } from '../src/gen/rng.ts';
 import { describeSaves, loadRaw } from './fixtures.ts';
@@ -146,6 +146,27 @@ describeSaves('mote', () => {
     expect(pk.isNicknamed).toBe(false);
     // En mayúsculas, como los nombres de los juegos de la generación 4.
     expect(pk.nickname).toBe(speciesNames[pk.species]!.toUpperCase());
+  });
+
+  /**
+   * Farfetch’d es el único de los 493 cuyo nombre no vuelve del guardado tal cual se metió, y
+   * conviene que eso esté escrito en una prueba en vez de aparecer de vez en cuando en otra.
+   *
+   * PKHeX escribe el nombre con el apóstrofo tipográfico ’ (U+2019). La tabla de caracteres de
+   * Gen 4 no lo tiene: `encodeG4String` guarda en su lugar el apóstrofo del juego (0x1B3), que al
+   * releer sale como el recto. El byte guardado es el correcto —es el que el juego pinta—, así
+   * que lo que cambia es la forma del apóstrofo y nada más.
+   *
+   * Antes de existir esta prueba, la de la interfaz comparaba contra el nombre de partida y
+   * fallaba una de cada ochenta ejecuciones: justo cuando el generador sorteaba esta especie.
+   */
+  test('Farfetch’d: el apóstrofo tipográfico se guarda como el del juego', () => {
+    const pk = defaultPokemon(83);
+
+    expect(speciesNames[83]).toBe('Farfetch’d');
+    expect(pk.nickname).toBe("FARFETCH'D");
+    expect(pk.isNicknamed).toBe(false);
+    expect(pk.checksumValid).toBe(true);
   });
 
   test('con mote pedido, se usa ese y queda marcado como propio', () => {

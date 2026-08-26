@@ -95,7 +95,7 @@ npm run dev -- --host        # reachable from another device on the same network
 ```
 
 ```bash
-npm test                     # 208 tests
+npm test                     # 209 tests
 npm run build                # static files in dist/
 ```
 
@@ -125,7 +125,7 @@ index of 660 cells in `src/data/pkhex/sprites.json`; it needs ImageMagick.
 
 The tests that touch the save format run against **real `PbrSaveData` files**, one per region. Those
 files come from real consoles and do not travel in the repository, so `npm test` looks for them and,
-if they're missing, **skips those blocks instead of failing**: a fresh clone passes 110 of the 208
+if they're missing, **skips those blocks instead of failing**: a fresh clone passes 110 of the 209
 tests and reports no errors at all. The ones that get skipped are exactly the ones that mean nothing
 without a save in front of them.
 
@@ -604,7 +604,7 @@ ania/
   src/ui/    interface, mobile first
   src/storage/  local store and the .aniapass format
   src/transport/  file and network, behind a shared interface
-  tests/     208 tests, against real saves from all three regions
+  tests/     209 tests, against real saves from all three regions
 aw/
   source/    homebrew: NAND (ISFS), HTTP server and text in five languages
   tests/     HTTP parsing and the translations, compiled natively
