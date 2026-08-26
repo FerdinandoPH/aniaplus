@@ -894,6 +894,12 @@ int main(void)
 	};
 	screen_begin(&info);
 	screen_log(aw_text(TXT_LOG_READY), http_local_ip(), AW_PORT);
+	/*
+	 * La otra via, para quien prefiera no depender de que la consola sirva la web: la copia
+	 * publicada en GitHub Pages, que se abre desde cualquier sitio y se actualiza sola. Se dice
+	 * aqui y no solo en el README porque en este momento el usuario esta mirando a la tele.
+	 */
+	screen_log("%s", aw_text(TXT_LOG_READY_WEB));
 
 	/*
 	 * Estado del modo de recuperacion. La espera entre intentos crece (2, 4, 8... hasta 30 s) para

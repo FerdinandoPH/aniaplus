@@ -71,6 +71,7 @@ static const char *const ES[TXT_COUNT] = {
 	[TXT_POWERING_OFF] = "Apagando...",
 
 	[TXT_LOG_READY] = "listo: abre http://%s:%d/ en el dispositivo",
+	[TXT_LOG_READY_WEB] = "  o abre https://ferdinandoph.github.io/aniaplus/ y escribe esa IP",
 	[TXT_LOG_NOTIFY_CLIENT] = "avisando al dispositivo conectado...",
 	[TXT_LOG_NO_BACKUP_YET] = "todavia no hay copia de seguridad: lee el guardado primero",
 	[TXT_LOG_RESTORING] = "restaurando el guardado original...",
@@ -195,6 +196,7 @@ static const char *const EN[TXT_COUNT] = {
 	[TXT_POWERING_OFF] = "Powering off...",
 
 	[TXT_LOG_READY] = "ready: open http://%s:%d/ on your device",
+	[TXT_LOG_READY_WEB] = "  or open https://ferdinandoph.github.io/aniaplus/ and type that IP",
 	[TXT_LOG_NOTIFY_CLIENT] = "telling the connected device...",
 	[TXT_LOG_NO_BACKUP_YET] = "no backup yet: read the save file first",
 	[TXT_LOG_RESTORING] = "restoring the original save...",
@@ -319,6 +321,7 @@ static const char *const DE[TXT_COUNT] = {
 	[TXT_POWERING_OFF] = "Schalte aus...",
 
 	[TXT_LOG_READY] = "bereit: oeffne http://%s:%d/ auf dem Geraet",
+	[TXT_LOG_READY_WEB] = "  oder https://ferdinandoph.github.io/aniaplus/ mit dieser IP",
 	[TXT_LOG_NOTIFY_CLIENT] = "benachrichtige das verbundene Geraet...",
 	[TXT_LOG_NO_BACKUP_YET] = "noch keine Sicherung: lies zuerst den Spielstand",
 	[TXT_LOG_RESTORING] = "stelle den urspruenglichen Spielstand wieder her...",
@@ -443,6 +446,7 @@ static const char *const FR[TXT_COUNT] = {
 	[TXT_POWERING_OFF] = "Extinction...",
 
 	[TXT_LOG_READY] = "pret: ouvre http://%s:%d/ sur l'appareil",
+	[TXT_LOG_READY_WEB] = "  ou ouvre https://ferdinandoph.github.io/aniaplus/ et tape cette IP",
 	[TXT_LOG_NOTIFY_CLIENT] = "on previent l'appareil connecte...",
 	[TXT_LOG_NO_BACKUP_YET] = "pas encore de copie: lis d'abord la sauvegarde",
 	[TXT_LOG_RESTORING] = "restauration de la sauvegarde d'origine...",
@@ -567,6 +571,7 @@ static const char *const IT[TXT_COUNT] = {
 	[TXT_POWERING_OFF] = "Spegnimento...",
 
 	[TXT_LOG_READY] = "pronto: apri http://%s:%d/ sul dispositivo",
+	[TXT_LOG_READY_WEB] = "  oppure https://ferdinandoph.github.io/aniaplus/ con quell'IP",
 	[TXT_LOG_NOTIFY_CLIENT] = "avviso il dispositivo connesso...",
 	[TXT_LOG_NO_BACKUP_YET] = "ancora nessuna copia: leggi prima il salvataggio",
 	[TXT_LOG_RESTORING] = "ripristino il salvataggio originale...",
