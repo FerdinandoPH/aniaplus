@@ -26,7 +26,7 @@ is ANIA+ code that reads these files; these files are not.
 They are tens of thousands of values. Copying them is a guarantee of typos, and a typo here doesn't
 produce an error: it produces an illegal Pokémon that the game rejects without saying why. The
 extractor pulls them out of PKHeX itself and checks what it pulls; if PKHeX is ever updated, it's
-enough to run it again. How to do that is in the main README, under "Regenerating the Gen 4 data".
+enough to run it again. How to do that is in the main README, under "The Gen 4 data".
 
 ## Licence
 
