@@ -46,7 +46,7 @@ export const ja: Record<string, string> = {
   'wii.written': '{count} 件のパスをセーブデータに書き込みました。Wii への送信を忘れずに。',
   'wii.save': 'セーブデータ',
   'wii.loadHint': 'ファイルからセーブデータを読み込むか、Wii アシスタントが動いていれば接続してください。',
-  'wii.sameNetwork': 'この端末は Wii と同じローカルネットワークに接続されている必要があります。ポート開放した外部 IP では動きません。',
+  'wii.sameNetwork': 'この端末は Wii と同じローカルネットワークに接続されている必要があります。',
   'wii.wiiAddress': 'Wii のアドレス',
   'wii.port': 'ポート',
   'wii.connecting': '接続中…',

@@ -42,7 +42,7 @@ export const en: Record<string, string> = {
   'wii.written': '{count} passes written to the save. Remember to send it to the Wii.',
   'wii.save': 'Save',
   'wii.loadHint': "Load the save from a file, or connect to the Wii assistant if it's running.",
-  'wii.sameNetwork': 'This device has to be on the same local network as the Wii. A public IP with port forwarding will not work.',
+  'wii.sameNetwork': 'This device has to be on the same local network as the Wii.',
   'wii.wiiAddress': "Wii's address",
   'wii.port': 'Port',
   'wii.connecting': 'Connecting…',

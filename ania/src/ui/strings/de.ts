@@ -42,7 +42,7 @@ export const de: Record<string, string> = {
   'wii.written': '{count} Pässe in den Spielstand geschrieben. Denk daran, ihn an die Wii zu senden.',
   'wii.save': 'Spielstand',
   'wii.loadHint': 'Lade den Spielstand aus einer Datei, oder verbinde dich mit dem Wii-Assistenten, falls er läuft.',
-  'wii.sameNetwork': 'Dieses Gerät muss im selben lokalen Netzwerk sein wie die Wii. Eine öffentliche IP mit Portweiterleitung funktioniert nicht.',
+  'wii.sameNetwork': 'Dieses Gerät muss im selben lokalen Netzwerk sein wie die Wii.',
   'wii.wiiAddress': 'Adresse der Wii',
   'wii.port': 'Port',
   'wii.connecting': 'Verbindung wird hergestellt…',
