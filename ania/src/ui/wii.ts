@@ -226,6 +226,35 @@ async function importFromSave(save: PbrSave, indexes: number[]): Promise<void> {
   toast(saved > 0 ? t('wii.savedLocally', { count: saved }) : t('wii.nothingSaved'), saved > 0 ? 'info' : 'error');
 }
 
+/**
+ * Borra del guardado los pases de las ranuras marcadas.
+ *
+ * Se borra como lo hace el juego (lo hace `deletePass`): la ranura conserva su diseño y si estaba
+ * desbloqueada, porque son suyas y no del pase que había dentro. Como todo lo demás de esta
+ * pantalla, esto solo toca el guardado que hay en memoria: hasta que no se envie a la Wii o se
+ * descargue, la copia de seguridad sigue valiendo para deshacerlo.
+ */
+async function deleteFromSave(save: PbrSave, indexes: number[]): Promise<void> {
+  const filled = indexes.filter((i) => !save.getPass(i).isEmpty);
+  if (filled.length === 0) { toast(t('wii.nothingToDelete'), 'error'); return; }
+
+  const ok = await confirmDialog(
+    t('wii.deleteTitle'),
+    t('wii.deleteBody', {
+      count: filled.length,
+      names: filled.map((i) => save.getPass(i).trainerName || t('wii.slotN', { n: i + 1 })).join(', '),
+    }),
+    t('wii.delete'),
+  );
+  if (!ok) return;
+
+  for (const index of filled) save.deletePass(index);
+  // Las marcas señalaban pases que ya no existen; dejarlas puestas solo confunde.
+  targets = [];
+  update({});
+  toast(t('wii.deleted', { count: filled.length }));
+}
+
 /** Escribe los pases seleccionados de la biblioteca en las ranuras elegidas. */
 async function transferToSave(save: PbrSave): Promise<void> {
   const chosen = state.stored.filter((p) => state.selected.has(p.id));
@@ -460,6 +489,8 @@ export function renderWii(): HTMLElement {
 
   // --- acciones
   const blocked = chosen.length === 0 || missingSlots > 0;
+  // Solo se puede borrar lo que hay: de las ranuras marcadas, las que tienen un pase dentro.
+  const markedFilled = targets.filter((i) => !save.getPass(i).isEmpty);
   container.append(
     el('section', { class: 'card' },
       el('h2', {}, t('wii.actions')),
@@ -468,6 +499,11 @@ export function renderWii(): HTMLElement {
           disabled: targets.length === 0,
           onclick: () => void importFromSave(save, targets),
         }, t('wii.saveNLocally', { n: targets.length || '' })),
+        el('button', {
+          class: 'danger',
+          disabled: markedFilled.length === 0,
+          onclick: () => void deleteFromSave(save, targets),
+        }, t('wii.deleteNFromSave', { n: markedFilled.length || '' })),
         el('button', {
           class: 'primary',
           disabled: blocked,

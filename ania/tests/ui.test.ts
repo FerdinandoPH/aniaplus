@@ -1006,6 +1006,51 @@ describeSaves('pantalla de la Wii', () => {
     expect(node.textContent).toContain('sin usar');
   });
 
+  test('borra del guardado los pases de las ranuras marcadas', async () => {
+    const raw = loadRaw('europa');
+    const save = PbrSave.load(raw);
+    update({ save, backup: raw, saveSource: 'Fichero' });
+    const [first] = save.customPassIndexes.filter((i) => !save.getPass(i).isEmpty);
+    const name = save.getPass(first!).trainerName;
+
+    // Sin nada marcado no hay nada que borrar.
+    let node = renderWii();
+    const borrarDe = (n: HTMLElement) =>
+      [...n.querySelectorAll('button')].find((b) => b.textContent?.startsWith('Borrar'))!;
+    expect(borrarDe(node).disabled).toBe(true);
+
+    const cards = [...node.querySelectorAll('.pass-grid .pass-card')] as HTMLButtonElement[];
+    cards[save.customPassIndexes.indexOf(first!)]!.click();
+    node = renderWii();
+    expect(borrarDe(node).disabled).toBe(false);
+
+    borrarDe(node).click();
+    await Promise.resolve();
+    const dialog = document.querySelector('dialog.dialog') as HTMLDialogElement;
+    expect(dialog.textContent).toContain(name);
+    ([...dialog.querySelectorAll('button')].find((b) => b.textContent === 'Borrar') as HTMLButtonElement).click();
+    await Promise.resolve();
+
+    expect(save.getPass(first!).isEmpty).toBe(true);
+    // Las marcas se sueltan: ya no señalan ningún pase.
+    node = renderWii();
+    expect(node.querySelectorAll('.pass-card[data-selected="true"]')).toHaveLength(0);
+  });
+
+  test('borrar conserva el diseño y el desbloqueo de la ranura', async () => {
+    const raw = loadRaw('europa');
+    const save = PbrSave.load(raw);
+    const index = save.customPassIndexes.find((i) => !save.getPass(i).isEmpty)!;
+    save.getPass(index).available = true;
+    const design = save.getPass(index).design;
+
+    save.deletePass(index);
+
+    expect(save.getPass(index).isEmpty).toBe(true);
+    expect(save.getPass(index).design).toBe(design);
+    expect(save.getPass(index).available).toBe(true);
+  });
+
   test('enviar a la Wii solo se ofrece si el origen es la Wii', () => {
     const raw = loadRaw('europa');
     update({ save: PbrSave.load(raw), backup: raw, saveSource: 'Fichero' });
