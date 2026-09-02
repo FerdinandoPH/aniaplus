@@ -111,10 +111,11 @@ jobs:
             1. Extract `${{ steps.zip.outputs.nombre }}` to the **root of the SD card**. You should end up with `apps/aniaplus/boot.dol`.
             2. Put the SD card in the Wii and open the **Homebrew Channel**.
             3. Launch *ANIA+ Asistente Wii*. The console's IP address appears on screen.
-            4. Open that address in a browser (`http://WII-IP-ADDRESS:8080/`), or go to
-               <https://ferdinandoph.github.io/aniaplus/> and type the IP into the *Wii* tab.
+            4. Go to <https://ferdinandoph.github.io/aniaplus/> and type that IP into the *Wii*
+               tab. With no internet, but with a local network, open the address the console
+               itself serves instead: `http://WII-IP-ADDRESS:8080/`.
 
-            The package ships the web app inside it, so option 3 works with no internet.
+            The package ships the web app inside it, so it also works with no internet at all.
 
             ## Before you start
 
@@ -136,10 +137,11 @@ jobs:
             1. Descomprime `${{ steps.zip.outputs.nombre }}` en la **raíz de la tarjeta SD**. Tiene que quedar `apps/aniaplus/boot.dol`.
             2. Mete la SD en la Wii y abre el **Homebrew Channel**.
             3. Lanza *ANIA+ Asistente Wii*. En pantalla saldrá la IP de la consola.
-            4. Abre esa dirección en el navegador (`http://IP-DE-LA-WII:8080/`), o entra en
-               <https://ferdinandoph.github.io/aniaplus/> y escribe la IP en la pestaña *Wii*.
+            4. Entra en <https://ferdinandoph.github.io/aniaplus/> y escribe esa IP en la pestaña
+               *Wii*. Si no tienes internet, pero sí red local, abre la dirección que sirve la
+               propia consola: `http://IP-DE-LA-WII:8080/`.
 
-            El paquete lleva la web dentro, así que la opción 3 funciona sin internet.
+            El paquete lleva la web dentro, así que también funciona sin internet ninguno.
 
             ### Antes de empezar
 

@@ -35,7 +35,7 @@
 #include "screen.h"
 #include "text.h"
 
-#define AW_VERSION "0.1.1"
+#define AW_VERSION "0.1.2"
 /* Raiz de los ficheros de la web en la SD. */
 #define WEB_ROOT "sd:/apps/aniaplus/web"
 
@@ -893,13 +893,17 @@ int main(void)
 		.silent = 0,
 	};
 	screen_begin(&info);
-	screen_log(aw_text(TXT_LOG_READY), http_local_ip(), AW_PORT);
 	/*
-	 * La otra via, para quien prefiera no depender de que la consola sirva la web: la copia
-	 * publicada en GitHub Pages, que se abre desde cualquier sitio y se actualiza sola. Se dice
-	 * aqui y no solo en el README porque en este momento el usuario esta mirando a la tele.
+	 * Primero la copia publicada en GitHub Pages, que es la via buena: siempre esta al dia y solo
+	 * necesita que le digan la IP de la consola. Se dice aqui y no solo en el README porque en este
+	 * momento el usuario esta mirando a la tele.
 	 */
-	screen_log("%s", aw_text(TXT_LOG_READY_WEB));
+	screen_log(aw_text(TXT_LOG_READY), http_local_ip());
+	/*
+	 * Y detras la que sirve la propia consola, para la casa sin internet pero con red local: la web
+	 * que lleva dentro el .dol es la de su version, no la ultima, pero funciona sin salir fuera.
+	 */
+	screen_log(aw_text(TXT_LOG_READY_LOCAL), http_local_ip(), AW_PORT);
 
 	/*
 	 * Estado del modo de recuperacion. La espera entre intentos crece (2, 4, 8... hasta 30 s) para
